@@ -52,7 +52,7 @@ namespace EmployeeTests.SalariedEmployeeTests
             //setup
             Employee testEmployee = new SalariedEmployee();
             int testDaysWorked = 130;
-            double testVacationDays = 7.5F;
+            double testVacationDays = 7.5;
             double expected = 0;
 
             testEmployee.Work(testDaysWorked);
