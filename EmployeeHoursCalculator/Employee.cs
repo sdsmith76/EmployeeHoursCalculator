@@ -1,12 +1,12 @@
 ﻿namespace EmployeeHoursCalculator.Employee
 {
     /// <summary>
-    /// Abstract class representing shared Employee functionality
+    /// Abstract class representing shared Employee functionality. MaxAnnualVacationDays must be set in inherited classes prior to accruing vacation with Work().
     /// </summary>
     public abstract class Employee
     {
         private double _vacationAccumulationFactor;
-        protected const int _maxDaysInYear = 260;
+        private const int _maxDaysInYear = 260;
 
         /// <summary>
         /// Vacation days accrued
@@ -17,24 +17,22 @@
         }
 
         /// <summary>
-        /// Factor by which vacation days accrue relative to days worked
+        /// Maximum number of vacation days that can be accrued in a year. Calculates vacation accumulation factor used for Work()
         /// </summary>
-        protected double VacationAccumulationFactor
+        protected double MaxAnnualVacationDays
         {
             get
             {
-                return _vacationAccumulationFactor;
+                return _vacationAccumulationFactor * _maxDaysInYear;
             }
             set
             {
                 _vacationAccumulationFactor = value / _maxDaysInYear;
             }
         }
-        
-
 
         /// <summary>
-        /// Updates total of vacation days accrued by working
+        /// Updates total of vacation days accrued by working. Must set MaxAnnualVacationDays in inherited classes prior to use.
         /// </summary>
         /// <param name="days">days worked for vacation accrual</param>
         /// <exception cref="ArgumentOutOfRangeException">inputs must be positive, and at most the days worked in a full year</exception>
@@ -44,8 +42,12 @@
             {
                 throw new ArgumentOutOfRangeException("Days must be a value between 0 and 260");
             }
+            if (_vacationAccumulationFactor == 0)
+            {
+                throw new InvalidOperationException("MaxAnnualVacationDays must be set");
+            }
 
-            VacationDays += days * VacationAccumulationFactor;
+            VacationDays += days * _vacationAccumulationFactor;
         }
 
         /// <summary>
@@ -77,7 +79,7 @@
 
         public HourlyEmployee()
         {
-            VacationAccumulationFactor = _maxAnnualVacationDays;
+            MaxAnnualVacationDays = _maxAnnualVacationDays;
         }
     }
 
@@ -89,12 +91,12 @@
         private const double _maxAnnualVacationDays = 15;
         public SalariedEmployee()
         {
-            VacationAccumulationFactor = _maxAnnualVacationDays;
+            MaxAnnualVacationDays = _maxAnnualVacationDays;
         }
 
-        protected SalariedEmployee(double vacationAccumulationFactor)
+        protected SalariedEmployee(double maxAnnualVacationDays)
         {
-            VacationAccumulationFactor = vacationAccumulationFactor;
+            MaxAnnualVacationDays = maxAnnualVacationDays;
         }
     }
 
